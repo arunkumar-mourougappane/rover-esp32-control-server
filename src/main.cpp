@@ -82,6 +82,7 @@ void Task0code(void *pvParameters)
 
    for (;;)
    {
+      pixels.SetPixelColor(CNeoPixel::Color(0, 100, 128)); // Set pixel to red
       lsm6dsox.getEvent(&accel, &gyro, &temp);
       Serial.printf(">AccX:%0.2f\n", accel.acceleration.x);
       Serial.printf(">AccY:%0.2f\n", accel.acceleration.y);
@@ -89,6 +90,7 @@ void Task0code(void *pvParameters)
       Serial.printf(">GyroX:%0.2f\n", gyro.gyro.x);
       Serial.printf(">GyroY:%0.2f\n", gyro.gyro.y);
       Serial.printf(">GyroZ:%0.2f\n", gyro.gyro.z);
+      pixels.SetPixelColor(CNeoPixel::Color(0, 100, 0)); // Set pixel to red
       delay(100);
    }
 }

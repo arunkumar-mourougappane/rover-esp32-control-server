@@ -17,10 +17,11 @@ CNeoPixel::CNeoPixel(uint8_t pixel_pin, uint8_t pixel_power_pin) : Adafruit_NeoP
    pinMode(m_PixelPowerPin, OUTPUT);
    digitalWrite(m_PixelPowerPin, HIGH);
    begin();
-   m_Initialized = true;
 }
 
 void CNeoPixel::SetPixelColor(uint32_t color) {
-   setPixelColor(MAX_PIXEL_COUNT-1, color);
-   show();
+   if (canShow() == true) {
+      setPixelColor(MAX_PIXEL_COUNT-1, color);
+      show();
+   }
 }

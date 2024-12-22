@@ -24,7 +24,6 @@ public:
    void SetPixelColor(uint32_t color);
 private:
    uint8_t m_PixelPowerPin;
-   bool m_Initialized = false;
 };
 
 #endif // !NEO_PIXEL_H
