@@ -16,11 +16,27 @@
 
 #define MAX_PIXEL_COUNT 1
 
+/**
+ * @brief A wrapper around Adafruit NeoPixel to
+ * simply NeoPixel use on single pixel block Neo Pixel
+ * hardware.
+ * 
+ */
 class CNeoPixel : public Adafruit_NeoPixel
 {
 public:
+   /**
+    * @brief Construct a new CNeoPixel object
+    * 
+    * @param pixel_pin GPIO Pin to Neo Pixel Data
+    * @param pixel_power_pin GPIO Pin to control Neo Pixel Power
+    */
    CNeoPixel(uint8_t pixel_pin, uint8_t pixel_power_pin);
-   static void ScopedSetNeoPixel(uint8_t pixelPin, uint8_t pixelPowerPin, neoPixelType pixelType, uint32_t pixelColor );
+   /**
+    * @brief Set the Pixel Color object
+    * 
+    * @param color - 32 bit RGB representation.
+    */
    void SetPixelColor(uint32_t color);
 private:
    uint8_t m_PixelPowerPin;
