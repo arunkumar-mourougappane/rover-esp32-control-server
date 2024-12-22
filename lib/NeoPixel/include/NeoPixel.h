@@ -33,11 +33,19 @@ public:
     */
    CNeoPixel(uint8_t pixel_pin, uint8_t pixel_power_pin);
    /**
-    * @brief Set the Pixel Color object
+    * @brief Set the Pixel Color (Overwrites current RGB Setting).
     * 
     * @param color - 32 bit RGB representation.
     */
    void SetPixelColor(uint32_t color);
+   /**
+    * @brief Sets the new Pixel Color without overriding previous RGB Setting.
+    * 
+    * @param color - 32-bit RGB for the color to set.
+    * @param clearOld - boolean flag to see if old data needs to be cleared or preserved.
+    * @return uint32_t - Updated Pixel color after setting the pixel.
+    */
+   uint32_t UpdatePixelColor(uint32_t color, bool clearOld=false);
 private:
    uint8_t m_PixelPowerPin;
 };

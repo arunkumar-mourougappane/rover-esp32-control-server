@@ -79,10 +79,23 @@ void Task0code(void *pvParameters)
    sensors_event_t accel;
    sensors_event_t gyro;
    sensors_event_t temp;
-
+   const uint8_t MAX_LED_WAIT = 5;
+   uint8_t led_wait_count = 0;
+   bool led_set = false;
    for (;;)
    {
-      pixels.SetPixelColor(CNeoPixel::Color(0, 100, 128)); // Set pixel to red
+      if ((led_wait_count < 5) && (led_set != true)) {
+         pixels.UpdatePixelColor(CNeoPixel::Color(0, 50, 0)); // Set pixel to red
+         led_set = true;
+      }
+      else if ((led_wait_count >= 5) && (led_set == true)) {
+         pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
+         led_set = false;
+         led_wait_count = 0;
+      }
+      else {
+         led_wait_count++;
+      }
       lsm6dsox.getEvent(&accel, &gyro, &temp);
       Serial.printf(">AccX:%0.2f\n", accel.acceleration.x);
       Serial.printf(">AccY:%0.2f\n", accel.acceleration.y);
@@ -90,7 +103,7 @@ void Task0code(void *pvParameters)
       Serial.printf(">GyroX:%0.2f\n", gyro.gyro.x);
       Serial.printf(">GyroY:%0.2f\n", gyro.gyro.y);
       Serial.printf(">GyroZ:%0.2f\n", gyro.gyro.z);
-      pixels.SetPixelColor(CNeoPixel::Color(0, 100, 0)); // Set pixel to red
+      pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
       delay(100);
    }
 }
@@ -102,11 +115,11 @@ void Task1code(void *pvParameters)
 
    for (;;)
    {
-      pixels.SetPixelColor(CNeoPixel::Color(255, 0, 0)); // Set pixel to red
+      pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 100)); // Set pixel to red
       digitalWrite(BUILTIN_LED, HIGH);
       delay(250);
       digitalWrite(BUILTIN_LED, LOW);
-      pixels.SetPixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
+      pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0), true); // Set pixel to red
       delay(250);
    }
 }
