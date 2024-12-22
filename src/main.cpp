@@ -1,27 +1,52 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_LSM6DSOX.h> // LSM6DS for 6-DOF Measurement
-
-TaskHandle_t sensor_process_task;
-TaskHandle_t web_handler_task;
-
-void Task0code(void*);
-void Task1code(void*);
-
-int led_bit = HIGH;
+#include "NeoPixel.h"
 
 /**
- * I2C Pins
+ * @brief  Pins
  */
 #define LSM6DOX_SDA_PIN 42
 #define LSM6DOX_SCL_PIN 41
 
+/**
+ * @brief NeoPixel Pins
+ *
+ */
+#define NEOPIXEL_DATA_PIN 33
+#define NEOPIXEL_POWER_PIN 34
+/**
+ * @brief NeoPixel Count.
+ *
+ */
+#define NEOPIXEL_COUNT 1
+
+/**
+ * @brief Task instantiations.
+ *
+ */
+TaskHandle_t sensor_process_task;
+TaskHandle_t web_handler_task;
+
+CNeoPixel pixels(NEOPIXEL_DATA_PIN, NEOPIXEL_DATA_PIN);
+
+void Task0code(void *);
+void Task1code(void *);
+
+int led_bit = HIGH;
+
 void setup()
 {
+
    Serial.begin(115200);
    Serial.println();
    pinMode(LED_BUILTIN, OUTPUT);
 
+   pixels.setBrightness(64);
+
+   pixels.SetPixelColor(CNeoPixel::Color(255, 0, 0)); // Set pixel to red
+   delay(5000);
+   pixels.SetPixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
    // create a task that executes the Task0code() function, with priority 1 and executed on core 0
    xTaskCreatePinnedToCore(Task0code, "Task0", 10000, NULL, 1, &sensor_process_task, 0);
    // create a task that executes the Task0code() function, with priority 1 and executed on core 1
@@ -30,9 +55,6 @@ void setup()
 
 void loop()
 {
-   digitalWrite(LED_BUILTIN, led_bit);
-   led_bit = !led_bit;
-   delay(500);
 }
 
 void Task0code(void *pvParameters)
@@ -51,15 +73,15 @@ void Task0code(void *pvParameters)
       Serial.println("Failed to initialize LSM6DOX.");
       delay(1000);
    }
-   
+
    Serial.println("LSM6DSOX Found!");
 
    sensors_event_t accel;
    sensors_event_t gyro;
    sensors_event_t temp;
-   sensors_event_t mag_event; 
 
-   for (;;) {
+   for (;;)
+   {
       lsm6dsox.getEvent(&accel, &gyro, &temp);
       Serial.printf(">AccX:%0.2f\n", accel.acceleration.x);
       Serial.printf(">AccY:%0.2f\n", accel.acceleration.y);
@@ -69,7 +91,6 @@ void Task0code(void *pvParameters)
       Serial.printf(">GyroZ:%0.2f\n", gyro.gyro.z);
       delay(100);
    }
-
 }
 
 void Task1code(void *pvParameters)
@@ -79,9 +100,11 @@ void Task1code(void *pvParameters)
 
    for (;;)
    {
+      pixels.SetPixelColor(CNeoPixel::Color(255, 0, 0)); // Set pixel to red
       digitalWrite(BUILTIN_LED, HIGH);
       delay(250);
       digitalWrite(BUILTIN_LED, LOW);
+      pixels.SetPixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
       delay(250);
    }
 }
