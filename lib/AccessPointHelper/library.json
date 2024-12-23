@@ -1,0 +1,33 @@
+{
+   "name": "AccessPointHelper",
+   "version": "1.0.0",
+   "authors": {
+      "name": "Arunkumar Mourougapapne",
+      "email": "arunkumar@anengineersrant.com",
+      "url": "https://anengineersrant.com/contact-us/"
+   },
+   "description": "A wrapper libary for quick setup of Wifi AccessPoint.",
+   "license": "MIT",
+   "keywords": [
+      "custom",
+      "cpp",
+      "library",
+      "WiFi"
+   ],
+   "frameworks": [
+      "arduino"
+   ],
+   "platforms": [
+      "espressif32"
+   ],
+   "dependencies": [
+   ],
+   "files": {
+      "include": [
+         "include/*.h"
+      ],
+      "src": [
+         "src/*.cpp"
+      ]
+   }
+}

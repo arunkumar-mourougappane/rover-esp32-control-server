@@ -1,38 +1,4 @@
-#include <Arduino.h>
-#include <Wire.h>
-#include <Adafruit_LSM6DSOX.h> // LSM6DS for 6-DOF Measurement
-#include "NeoPixel.h"
-
-/**
- * @brief  Pins
- */
-#define LSM6DOX_SDA_PIN 42
-#define LSM6DOX_SCL_PIN 41
-
-/**
- * @brief NeoPixel Pins
- *
- */
-#define NEOPIXEL_DATA_PIN 33
-#define NEOPIXEL_POWER_PIN 34
-/**
- * @brief NeoPixel Count.
- *
- */
-#define NEOPIXEL_COUNT 1
-
-/**
- * @brief Task instantiations.
- *
- */
-TaskHandle_t sensor_process_task;
-TaskHandle_t web_handler_task;
-
-CNeoPixel pixels(NEOPIXEL_DATA_PIN, NEOPIXEL_DATA_PIN);
-
-void Task0code(void *);
-void Task1code(void *);
-
+#include "rover_server.h"
 int led_bit = HIGH;
 
 void setup()
@@ -45,8 +11,18 @@ void setup()
    pixels.setBrightness(64);
 
    pixels.SetPixelColor(CNeoPixel::Color(255, 0, 0)); // Set pixel to red
-   delay(5000);
+   delay(1000);
+   pixels.UpdatePixelColor(CNeoPixel::Color(128, 0, 128), true); // Set pixel to red
+
+   while (!roverNetwork.SetupAccessPoint()) {
+      log_e("AP Setup Failed. Waiting to retry...");
+      delay(1000);
+   }   
+   delay(1000);
    pixels.SetPixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
+
+   Serial.printf("AP IP Address: %s\n", roverNetwork.GetAccessPointIP().toString().c_str());
+
    // create a task that executes the Task0code() function, with priority 1 and executed on core 0
    xTaskCreatePinnedToCore(Task0code, "Task0", 10000, NULL, 1, &sensor_process_task, 0);
    // create a task that executes the Task0code() function, with priority 1 and executed on core 1
@@ -112,6 +88,7 @@ void Task1code(void *pvParameters)
 {
    Serial.print("Task1 running on core ");
    Serial.println(xPortGetCoreID());
+   Serial.println("Server started");
 
    for (;;)
    {
