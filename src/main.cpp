@@ -1,4 +1,8 @@
 #include "rover_server.h"
+#include <WebServer.h>
+
+WebServer server(80);
+
 int led_bit = HIGH;
 
 void setup()
@@ -14,10 +18,11 @@ void setup()
    delay(1000);
    pixels.UpdatePixelColor(CNeoPixel::Color(128, 0, 128), true); // Set pixel to red
 
-   while (!roverNetwork.SetupAccessPoint()) {
+   while (!roverNetwork.SetupAccessPoint())
+   {
       log_e("AP Setup Failed. Waiting to retry...");
       delay(1000);
-   }   
+   }
    delay(1000);
    pixels.SetPixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
 
@@ -60,16 +65,19 @@ void Task0code(void *pvParameters)
    bool led_set = false;
    for (;;)
    {
-      if ((led_wait_count < 5) && (led_set != true)) {
+      if ((led_wait_count < 5) && (led_set != true))
+      {
          pixels.UpdatePixelColor(CNeoPixel::Color(0, 50, 0)); // Set pixel to red
          led_set = true;
       }
-      else if ((led_wait_count >= 5) && (led_set == true)) {
+      else if ((led_wait_count >= 5) && (led_set == true))
+      {
          pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
          led_set = false;
          led_wait_count = 0;
       }
-      else {
+      else
+      {
          led_wait_count++;
       }
       lsm6dsox.getEvent(&accel, &gyro, &temp);
@@ -84,19 +92,33 @@ void Task0code(void *pvParameters)
    }
 }
 
+void toggleOff() {
+   digitalWrite(BUILTIN_LED, LOW);
+   server.send(200, "text/plain", "Ok");
+}
+
+void toggleOn() {
+   digitalWrite(BUILTIN_LED, HIGH);
+   server.send(200, "text/plain", "Ok");
+}
+
+void handleNotFound()
+{
+   server.send(404, "text/plain", "Not found");
+}
+
 void Task1code(void *pvParameters)
 {
    Serial.print("Task1 running on core ");
    Serial.println(xPortGetCoreID());
    Serial.println("Server started");
-
+   server.on("/on", toggleOn);
+   server.on("/off", toggleOff);
+   server.onNotFound(handleNotFound);
+   server.begin();
    for (;;)
    {
-      pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 100)); // Set pixel to red
-      digitalWrite(BUILTIN_LED, HIGH);
-      delay(250);
-      digitalWrite(BUILTIN_LED, LOW);
-      pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0), true); // Set pixel to red
-      delay(250);
+      server.handleClient();
+      delay(5);
    }
 }
