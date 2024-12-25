@@ -21,4 +21,4 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Build PlatformIO Project
-        run: pio run  --environment adafruit_feather_esp32s3_tft 
+        run: pio run 
