@@ -19,42 +19,29 @@
 #include "AccessPointHelper.h"
 
 /**
- * @brief  Pins
- */
-#define LSM6DOX_SDA_PIN 42
-#define LSM6DOX_SCL_PIN 41
-
-/**
- * @brief NeoPixel Pins
- *
- */
-#define NEOPIXEL_DATA_PIN 33
-#define NEOPIXEL_POWER_PIN 34
-/**
- * @brief NeoPixel Count.
- *
- */
-#define NEOPIXEL_COUNT 1
-
-/**
  * @brief Task instantiations.
  *
  */
 TaskHandle_t sensor_process_task;
 TaskHandle_t web_handler_task;
 
-
-void Task0code(void *);
-void Task1code(void *);
+/**
+ * @brief Tasks for Reading Sensor data and passing to Web Server.
+ * 
+ */
+void SensorDataTask(void *);
+void WebServerTask(void *);
+/**
+ * @brief A queue to handle IMU Sensor Data.
+ * 
+ */
+QueueHandle_t imuSensorQueue;
 
 /**
  * @brief AccessPoint Credentials
  * 
  */
-
 const String ROVER_AP_SSID = String("MOONBASE-II");
 const String ROVER_AP_PASS_PHRASE = String("Trypt1c0n$");
 
-CNeoPixel pixels(NEOPIXEL_DATA_PIN, NEOPIXEL_DATA_PIN);
-CAccessPointHelper roverNetwork(ROVER_AP_SSID, ROVER_AP_PASS_PHRASE);
 #endif // !ROVER_SERVER_H
