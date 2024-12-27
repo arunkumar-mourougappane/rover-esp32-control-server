@@ -1,6 +1,10 @@
-#include "RoverServer.h"
-#include <EmbeddedWebServer.h>
 #include <atomic>
+
+#include "RoverServer.h"
+#include <Adafruit_LSM6DSOX.h>
+#include "NeoPixel.h"
+#include "AccessPointHelper.h"
+#include "EmbeddedWebServer.h"
 
 /**
  * @brief  Pins

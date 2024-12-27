@@ -14,9 +14,7 @@
 #define ROVER_SERVER_H
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_LSM6DSOX.h> // LSM6DS for 6-DOF Measurement
-#include "NeoPixel.h"
-#include "AccessPointHelper.h"
+
 
 /**
  * @brief Task instantiations.
