@@ -16,6 +16,10 @@ CAccessPointHelper::CAccessPointHelper(String accesPointSSID, String accessPoint
 }
 
 bool CAccessPointHelper::SetupAccessPoint() {
+   if (mode(WIFI_AP) == false) {
+      log_e("Cannot setup Wifi Modem in Accesspoint Mode.");
+      return false;
+   }
    if(softAP(m_AccessPointSSID, m_AccessPointPass) == true) {
       log_i("Accesspoint %s has been setup successfully.", m_AccessPointSSID.c_str());
       return true;
@@ -25,5 +29,5 @@ bool CAccessPointHelper::SetupAccessPoint() {
 }
 
 IPAddress CAccessPointHelper::GetAccessPointIP() {
-   return WiFi.softAPIP();
+   return softAPIP();
 }

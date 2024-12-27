@@ -1,18 +1,18 @@
 {
-   "name": "AccessPointHelper",
+   "name": "EmbeddedWebServer",
    "version": "1.0.0",
    "authors": {
       "name": "Arunkumar Mourougapapne",
       "email": "arunkumar@anengineersrant.com",
       "url": "https://anengineersrant.com/contact-us/"
    },
-   "description": "A wrapper libary for quick setup of Wifi AccessPoint.",
+   "description": "A wrapper library to start web server and manager different commands.",
    "license": "MIT",
    "keywords": [
       "custom",
       "cpp",
       "library",
-      "WiFi"
+      "Embedded Web Server"
    ],
    "frameworks": [
       "arduino"
@@ -21,7 +21,6 @@
       "espressif32"
    ],
    "dependencies": [
-      "AccessPointHelper"
    ],
    "files": {
       "include": [
