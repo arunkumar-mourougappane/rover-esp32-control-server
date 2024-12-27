@@ -87,7 +87,11 @@ class CEmbeddedWebServer : public WebServer {
        * 
        */
       void getIMUData();
-
+      /**
+       * @brief Web Handle to get specific imu data.
+       * 
+       */
+      void getIMUDataOnRequest();
       // Access Point Information.
       CAccessPointHelper m_AccessPoint;
       // Local instance data of IMU Sensor ouput.

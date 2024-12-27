@@ -116,7 +116,7 @@ void SensorDataTask(void *pvParameters)
          imu_data.gyroY = gyro.gyro.y;
          imu_data.gyroZ = gyro.gyro.z;
          imu_data.temperature = temp.temperature;
-         xQueueSend(imuSensorQueue, &imu_data, pdMS_TO_TICKS(100));
+         xQueueSend(imuSensorQueue, &imu_data, pdMS_TO_TICKS(60));
          imu_data_ready_flag = true;
       }
       pixels.UpdatePixelColor(CNeoPixel::Color(0, 0, 0)); // Set pixel to red
@@ -139,7 +139,7 @@ void WebServerTask(void *pvParameters)
    {
       // Read only if data is ready.
       if (imu_data_ready_flag == true) {
-         if (xQueueReceive(imuSensorQueue, &imu_data, pdMS_TO_TICKS(100)) == pdTRUE) {
+         if (xQueueReceive(imuSensorQueue, &imu_data, pdMS_TO_TICKS(60)) == pdTRUE) {
             embeddedServer.updateImuData(imu_data);
          }
          imu_data_ready_flag = false;
