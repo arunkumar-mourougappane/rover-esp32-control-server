@@ -4,7 +4,8 @@
 #include <Adafruit_LSM6DSOX.h>
 #include "NeoPixel.h"
 #include "AccessPointHelper.h"
-#include "EmbeddedWebServer.h"
+#include "GrpcServer.h"
+#include "JoystickData.h"
 
 /**
  * @brief  Pins
@@ -129,22 +130,38 @@ void SensorDataTask(void *pvParameters)
 void WebServerTask(void *pvParameters)
 {
    log_i("Task1 running on core %d", xPortGetCoreID());
-   log_i("Setting up Web server handlers");
-   CEmbeddedWebServer embeddedServer(80, ROVER_AP_SSID, ROVER_AP_PASS_PHRASE);
-   embeddedServer.SetupNetwork();
-   embeddedServer.SetUpWebHandlers();
+   log_i("Setting up gRPC server");
+   CGrpcServer grpcServer(50051, ROVER_AP_SSID, ROVER_AP_PASS_PHRASE);
+   grpcServer.SetupNetwork();
+   grpcServer.StartServer();
    imu_data_t imu_data;
-   log_i("Starting Web Server");
+   log_i("Starting gRPC Server");
    for (;;)
    {
       // Read only if data is ready.
       if (imu_data_ready_flag == true) {
          if (xQueueReceive(imuSensorQueue, &imu_data, pdMS_TO_TICKS(60)) == pdTRUE) {
-            embeddedServer.updateImuData(imu_data);
+            grpcServer.UpdateImuData(imu_data);
          }
          imu_data_ready_flag = false;
       }
-      embeddedServer.handleClient();
+      
+      // Handle incoming client connections and process joystick data
+      grpcServer.HandleClients();
+      
+      // Get latest joystick data and use it for rover control
+      joystick_data_t joystickData = grpcServer.GetJoystickData();
+      
+      // Example: Use joystick data to control something (e.g., print values)
+      static unsigned long lastJoystickPrint = 0;
+      if (millis() - lastJoystickPrint > 1000 && joystickData.timestamp > 0) {
+         log_i("Joystick control: L(%d,%d) R(%d,%d) Btns(L:%d,R:%d)", 
+               joystickData.left_x, joystickData.left_y,
+               joystickData.right_x, joystickData.right_y,
+               joystickData.left_button, joystickData.right_button);
+         lastJoystickPrint = millis();
+      }
+      
       delay(5);
    }
 }
